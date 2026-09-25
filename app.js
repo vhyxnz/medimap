@@ -1,4 +1,4 @@
-const APP_VERSION = "1.5.1";
+const APP_VERSION = "1.6.0";
 const starterMedicines = [
   { id: 1, name: "Paracetamol 500mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf A", addedAt: 6 },
   { id: 2, name: "Ibuprofen 200mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf B", addedAt: 5 },
@@ -568,6 +568,8 @@ document.addEventListener("pointermove", (event) => { if (!dragSelection) return
 document.addEventListener("pointerup", () => { if (!dragSelection) return; dragSelection = null; $("#selectionBox").hidden = true; $("#selectionBox").removeAttribute("style"); render(); });
 grid.addEventListener("pointerdown", (event) => { if (window.innerWidth > 900 || selectionMode || event.target.closest("button,input,label")) return; const card = event.target.closest("[data-card-id]"); if (card) cardSwipe = { card, x: event.clientX, y: event.clientY }; });
 grid.addEventListener("pointerup", (event) => { if (!cardSwipe) return; const { card, x, y } = cardSwipe; cardSwipe = null; const dx = event.clientX - x; const dy = event.clientY - y; if (Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 1.25) return; swipeJustHappened = true; grid.querySelectorAll(".medicine-card.swiped").forEach((item) => { if (item !== card) { item.classList.remove("swiped"); item.querySelector("[data-card-actions]").hidden = true; } }); const reveal = dx < 0; card.classList.toggle("swiped", reveal); const menu = card.querySelector("[data-card-actions]"); menu.hidden = !reveal; setTimeout(() => { swipeJustHappened = false; }, 350); });
+grid.addEventListener("pointercancel", () => { cardSwipe = null; swipeJustHappened = false; });
+document.addEventListener("dblclick", (event) => { if (window.innerWidth <= 900 && event.target.closest("button,a,label,.medicine-card,.mobile-tabbar,.mobile-more-sheet")) event.preventDefault(); }, { passive: false });
 $("#toastAction").addEventListener("click", () => { const action = undoOperation; undoOperation = null; $("#toastAction").hidden = true; if (action) action(); });
 
 document.addEventListener("click", (event) => { if (event.target.closest("#openAdd,#sidebarAddMedicines,#openOrganize,#openNearExpiry,#openSettings,#manageCategories,#manageGondolas,#openCategoryGuide,#openShelfReference,[data-card-id],[data-mobile-action]")) preservedScrollY = window.scrollY; }, true);
@@ -612,4 +614,30 @@ document.addEventListener("keydown", (event) => { if (event.key === "Escape" && 
 renderCustomPharmacyName();
 renderAppVersion();
 render();
-if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js"));
+
+let deferredInstallPrompt = null;
+const installControls = [...document.querySelectorAll("[data-install-app]")];
+function setInstallControlsVisible(visible) { installControls.forEach((control) => { control.hidden = !visible; }); }
+window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); deferredInstallPrompt = event; setInstallControlsVisible(true); });
+window.addEventListener("appinstalled", () => { deferredInstallPrompt = null; setInstallControlsVisible(false); toast("MediMap installed successfully"); });
+installControls.forEach((control) => control.addEventListener("click", async () => {
+  closeMobileMore();
+  if (deferredInstallPrompt) { deferredInstallPrompt.prompt(); const result = await deferredInstallPrompt.userChoice; deferredInstallPrompt = null; setInstallControlsVisible(false); if (result.outcome === "accepted") toast("Installing MediMap…"); return; }
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  toast(isIOS ? "In Safari, tap Share then Add to Home Screen" : "Use your browser menu and choose Install app", "Got it", () => {}, 6000);
+}));
+if (!window.matchMedia("(display-mode: standalone)").matches && /iphone|ipad|ipod/i.test(navigator.userAgent)) setInstallControlsVisible(true);
+
+const launchAction = new URLSearchParams(location.search).get("action");
+if (launchAction === "add") setTimeout(openDialog, 250);
+if (launchAction === "expiry") setTimeout(openNearExpiryReport, 250);
+
+if ("serviceWorker" in navigator) window.addEventListener("load", async () => {
+  try {
+    const registration = await navigator.serviceWorker.register("service-worker.js");
+    const offerUpdate = (worker) => { if (!worker) return; toast("A MediMap update is ready", "Update", () => worker.postMessage("SKIP_WAITING"), 10000); };
+    if (registration.waiting) offerUpdate(registration.waiting);
+    registration.addEventListener("updatefound", () => { const worker = registration.installing; worker?.addEventListener("statechange", () => { if (worker.state === "installed" && navigator.serviceWorker.controller) offerUpdate(worker); }); });
+    let refreshing = false; navigator.serviceWorker.addEventListener("controllerchange", () => { if (refreshing) return; refreshing = true; location.reload(); });
+  } catch (error) { console.error("MediMap could not enable offline mode", error); }
+});

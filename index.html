@@ -2,10 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#123b66">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MediMap">
+  <meta name="application-name" content="MediMap">
+  <meta name="format-detection" content="telephone=no">
   <meta name="description" content="Find medicines by name, category, gondola, or shelf.">
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="selection.css">
   <link rel="stylesheet" href="theme.css">
@@ -32,6 +42,7 @@
       <button class="nav-item" id="openOrganize" type="button"><svg class="ui-icon"><use href="icons.svg#organize"></use></svg> Organize</button>
       <button class="nav-item" id="openNearExpiry" type="button"><svg class="ui-icon"><use href="icons.svg#clock"></use></svg> Near expiry</button>
       <button class="nav-item" id="openSettings" type="button"><svg class="ui-icon"><use href="icons.svg#settings"></use></svg> Settings</button>
+      <button class="nav-item install-app-control" type="button" data-install-app hidden><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Install MediMap</button>
     </nav>
     <div class="sidebar-note"><span class="status-dot"></span><div><strong>Stored locally</strong><small>Your catalog works offline.</small><small class="app-version" id="sidebarAppVersion">Version</small></div></div>
   </aside>
@@ -94,6 +105,7 @@
         <button type="button" data-mobile-action="categories"><svg class="ui-icon"><use href="icons.svg#edit"></use></svg><span><strong>Categories</strong><small>Edit and manage</small></span></button>
         <button type="button" data-mobile-action="gondolas"><svg class="ui-icon"><use href="icons.svg#shelves"></use></svg><span><strong>Gondolas</strong><small>Manage store layout</small></span></button>
         <button type="button" data-mobile-action="settings"><svg class="ui-icon"><use href="icons.svg#settings"></use></svg><span><strong>Settings</strong><small>Data and preferences</small></span></button>
+        <button class="install-app-control" type="button" data-install-app hidden><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span><strong>Install MediMap</strong><small>Add to your home screen</small></span></button>
       </div>
     </section>
   </div>

@@ -1,1 +1,25 @@
-{"name":"MediMap","short_name":"MediMap","description":"Find medicines by gondola and shelf.","start_url":"./","display":"standalone","background_color":"#f3f6f9","theme_color":"#123b66","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+  "id": "./",
+  "name": "MediMap Pharmacy Catalog",
+  "short_name": "MediMap",
+  "description": "Find, organize, and track medicines by category, gondola, shelf, and expiry date.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#f3f6f9",
+  "theme_color": "#123b66",
+  "categories": ["medical", "business", "productivity"],
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Search inventory", "short_name": "Search", "description": "Search the medicine inventory", "url": "./#inventory", "icons": [{"src": "icon-192.png", "sizes": "192x192"}]},
+    {"name": "Add medicines", "short_name": "Add", "description": "Add medicines to the catalog", "url": "./?action=add", "icons": [{"src": "icon-192.png", "sizes": "192x192"}]},
+    {"name": "Near expiry", "short_name": "Expiry", "description": "Review near-expiry medicines", "url": "./?action=expiry", "icons": [{"src": "icon-192.png", "sizes": "192x192"}]}
+  ]
+}
