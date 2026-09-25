@@ -84,3 +84,10 @@ button:active{transform:scale(.975)}
   .organize-board{border:0;background:transparent;padding:2px}.organize-shelf{border:0;border-radius:0;background:transparent}.organize-shelf+ .organize-shelf{border-top:8px solid #edf3f6}.organize-shelf h3{border-radius:8px 8px 0 0}
   .organize-entry{border-top:1px solid #e1e8ec;background:#fff}.organize-entry input{border:0;border-radius:0;background:transparent;box-shadow:none}.organize-entry input:focus{border:0;background:#f1f9fc;box-shadow:inset 0 -2px #238fc2}.organize-entry.active,.organize-entry:focus-within{background:#f7fbfd}.organize-entry .organize-move-buttons button{background:transparent;border:1px solid #dce8ee}.organize-actions{background:rgba(248,251,253,.96)!important;border-top:1px solid #dce6ec}.organize-actions>a,.organize-actions>label,.organize-actions>button{border-radius:9px;box-shadow:none}
 }
+
+/* Medicine actions: escape the grouped list on phones */
+@media(max-width:620px){
+  .medicine-card:not(.swiped) .card-action-menu:not([hidden]){position:fixed;z-index:70;left:12px;right:12px;top:auto;bottom:calc(74px + env(safe-area-inset-bottom));display:grid;min-width:0;padding:8px;border:1px solid rgba(139,169,188,.35);border-radius:18px;background:rgba(252,254,255,.98);box-shadow:0 18px 55px rgba(8,36,58,.28);backdrop-filter:blur(20px);animation:sheetIn .18s var(--ease-premium)}
+  .medicine-card:not(.swiped) .card-action-menu button{min-height:48px;padding:12px 14px;border-radius:11px;font-size:13px}.medicine-card:not(.swiped) .card-action-menu button+button{border-top:1px solid #e6edf1}.medicine-card:not(.swiped) .card-action-menu .card-action-delete{color:#a13737;background:#fff7f7}
+  .medicine-card:has(.card-action-menu:not([hidden])){z-index:12}
+}

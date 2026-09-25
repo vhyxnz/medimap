@@ -1,4 +1,4 @@
-const APP_VERSION = "1.7.1";
+const APP_VERSION = "1.7.2";
 const starterMedicines = [
   { id: 1, name: "Paracetamol 500mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf A", addedAt: 6 },
   { id: 2, name: "Ibuprofen 200mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf B", addedAt: 5 },
@@ -616,7 +616,9 @@ $("#mobileMoreSheet")?.addEventListener("click", (event) => {
   const targets = { add: "#openAdd", expiry: "#openNearExpiry", categories: "#manageCategories", gondolas: "#manageGondolas", settings: "#openSettings" };
   closeMobileMore(); document.querySelector(targets[button.dataset.mobileAction])?.click();
 });
-document.addEventListener("click", (event) => { if (!event.target.closest(".medicine-card")) { grid.querySelectorAll("[data-card-actions]").forEach((menu) => { menu.hidden = true; }); grid.querySelectorAll("[data-card-menu]").forEach((button) => button.setAttribute("aria-expanded", "false")); } });
+function closeCardActionMenus() { grid.querySelectorAll("[data-card-actions]").forEach((menu) => { menu.hidden = true; }); grid.querySelectorAll("[data-card-menu]").forEach((button) => button.setAttribute("aria-expanded", "false")); }
+document.addEventListener("click", (event) => { if (!event.target.closest("[data-card-actions],[data-card-menu]")) closeCardActionMenus(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeCardActionMenus(); });
 document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !$("#mobileMoreSheet").hidden) closeMobileMore(); });
 
 renderCustomPharmacyName();
