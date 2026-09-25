@@ -2,7 +2,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).parent
-SOURCE = ROOT / "MediFindLogo.png"
+SOURCE = ROOT / "MediMapLogoPremium.png"
 BACKGROUND = (18, 59, 102, 255)
 
 source = Image.open(SOURCE).convert("RGBA")

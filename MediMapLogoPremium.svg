@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">MediMap</title><desc id="desc">A folded map shaped like an M with a location pin</desc>
+  <defs>
+    <linearGradient id="bg" x1="64" y1="32" x2="448" y2="480" gradientUnits="userSpaceOnUse"><stop stop-color="#1c527f"/><stop offset=".5" stop-color="#123b66"/><stop offset="1" stop-color="#092947"/></linearGradient>
+    <linearGradient id="mark" x1="116" y1="140" x2="402" y2="372" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#dff5fb"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#031a2e" flood-opacity=".34"/></filter>
+  </defs>
+  <rect x="10" y="10" width="492" height="492" rx="118" fill="url(#bg)"/>
+  <rect x="11" y="11" width="490" height="490" rx="117" fill="none" stroke="#8edced" stroke-opacity=".2" stroke-width="2"/>
+  <g filter="url(#shadow)" fill="none" stroke="url(#mark)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M118 361V158l138 119 138-119v203l-101-54-37 22-37-22z" stroke-width="37"/>
+    <path d="M306 232c0-25 20-45 45-45s45 20 45 45c0 31-45 88-45 88s-45-57-45-88z" fill="url(#mark)" stroke="none"/>
+    <circle cx="351" cy="232" r="14" fill="#123b66" stroke="none"/>
+  </g>
+  <g filter="url(#shadow)" fill="url(#mark)"><rect x="390" y="78" width="22" height="70" rx="11"/><rect x="366" y="102" width="70" height="22" rx="11"/></g>
+  <path d="M82 73c74-38 178-41 265-7" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="12" stroke-linecap="round"/>
+</svg>
