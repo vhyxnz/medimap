@@ -1,0 +1,1 @@
+{"name":"MediMap","short_name":"MediMap","description":"Find medicines by gondola and shelf.","start_url":"./","display":"standalone","background_color":"#f3f6f9","theme_color":"#123b66","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}

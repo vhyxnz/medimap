@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123b66">
+  <meta name="description" content="Find medicines by name, category, gondola, or shelf.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="selection.css">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="expiry.css">
+  <link rel="stylesheet" href="bulk-edit.css">
+  <link rel="stylesheet" href="gondolas.css">
+  <link rel="stylesheet" href="categories.css">
+  <link rel="stylesheet" href="inventory-tools.css">
+  <link rel="stylesheet" href="import.css">
+  <link rel="stylesheet" href="settings.css">
+  <link rel="stylesheet" href="organize.css">
+  <link rel="stylesheet" href="export-arrangement.css">
+  <link rel="stylesheet" href="premium-mobile.css">
+  <title>MediMap</title>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#"><img class="brand-logo" src="MediFindLogo.png" alt="MediFind logo"><span class="brand-text"><strong>MediMap</strong><small id="brandCustomName" hidden></small></span></a>
+    <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="false" aria-controls="mainNavigation" aria-label="Open navigation"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <nav id="mainNavigation" aria-label="Main navigation">
+      <a class="nav-item active" href="#inventory"><svg class="ui-icon"><use href="icons.svg#search"></use></svg> Inventory</a>
+      <button class="nav-item" id="sidebarAddMedicines" type="button"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Add medicines</button>
+      <button class="nav-item" id="sidebarShelfGuide" type="button"><svg class="ui-icon"><use href="icons.svg#shelves"></use></svg> Shelf guide</button>
+      <button class="nav-item" id="openOrganize" type="button"><svg class="ui-icon"><use href="icons.svg#organize"></use></svg> Organize</button>
+      <button class="nav-item" id="openNearExpiry" type="button"><svg class="ui-icon"><use href="icons.svg#clock"></use></svg> Near expiry</button>
+      <button class="nav-item" id="openSettings" type="button"><svg class="ui-icon"><use href="icons.svg#settings"></use></svg> Settings</button>
+    </nav>
+    <div class="sidebar-note"><span class="status-dot"></span><div><strong>Stored locally</strong><small>Your catalog works offline.</small><small class="app-version" id="sidebarAppVersion">Version</small></div></div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div><p class="eyebrow">PHARMACY CATALOG</p><h1>Find the right medicine, fast.</h1></div>
+      <div class="topbar-actions"><button class="primary" id="openAdd" type="button"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="button-label">Add medicines</span></button></div>
+    </header>
+
+    <section class="search-panel" id="inventory">
+      <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search medicine, category, gondola or shelf…" autocomplete="off"></label>
+      <div class="filter-row">
+        <div class="category-filter-panel"><button class="tool-button category-toggle" id="toggleCategories" type="button" aria-expanded="false">Categories</button><div class="filter-group" id="categoryFilters" aria-label="Filter by category" hidden></div></div>
+        <div class="filter-tools"><button class="tool-button" id="openCategoryGuide" type="button" aria-label="Open category guide"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>Category guide</button><button class="tool-button" id="manageCategories" type="button"><svg class="ui-icon"><use href="icons.svg#edit"></use></svg>Edit categories</button><select id="sortSelect" aria-label="Sort medicines"><option value="name-asc">Name A–Z</option><option value="name-desc">Name Z–A</option><option value="location">Location</option><option value="newest">Newest added</option></select></div>
+      </div>
+      <div class="mobile-quick-filters" aria-label="Quick inventory filters">
+        <select id="mobileGondolaFilter" aria-label="Filter by gondola"><option value="">All gondolas</option></select>
+        <select id="mobileExpiryFilter" aria-label="Filter by expiry status"><option value="">Any expiry</option><option value="expiring">Near expiry</option><option value="expired">Expired</option><option value="scheduled">Future dated</option><option value="undated">No expiry</option></select>
+      </div>
+      <div class="active-filter-chips" id="activeFilterChips" aria-label="Active filters" hidden></div>
+    </section>
+
+    <section class="content-grid">
+      <div>
+        <div class="section-heading"><div><h2>Medicine inventory</h2><p id="resultCount">0 medicines</p></div><div class="heading-actions"><div class="view-toggle" aria-label="Inventory view"><button id="gridView" type="button" title="Grid view"><svg class="ui-icon"><use href="icons.svg#grid"></use></svg></button><button id="listView" type="button" title="List view"><svg class="ui-icon"><use href="icons.svg#list"></use></svg></button></div><button class="tool-button" id="mobileSelectMode" type="button"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 12 3 3 8-8"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg>Select</button><button class="tool-button" id="boxSelect" type="button"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" stroke-dasharray="3 3"/><path d="m9 12 2 2 4-5"/></svg>Box select</button><button class="text-button" id="selectAll">Select all</button><button class="text-button" id="clearSearch" hidden>Clear search</button></div></div>
+        <div class="bulk-bar" id="bulkBar" hidden>
+          <div class="bulk-heading"><strong id="selectedCount">0 selected</strong><button class="text-button" id="clearSelection" type="button">Clear</button></div>
+          <div class="bulk-actions">
+            <div class="bulk-category bulk-category-editor"><select id="bulkCategory" aria-label="Category for selected medicines"></select><input id="bulkNewCategory" placeholder="New category name" aria-label="New category name" hidden><button class="bulk-action-button" id="assignCategory" type="button">Assign</button></div>
+            <div class="bulk-category"><input id="bulkGondola" list="gondolaList" placeholder="New gondola" aria-label="New gondola for selected medicines"><button class="bulk-action-button" id="moveGondola" type="button">Move</button></div>
+            <button class="danger-button" id="deleteSelected" type="button">Delete selected</button>
+          </div>
+        </div>
+        <div class="selection-surface" id="selectionSurface"><div class="medicine-grid" id="medicineGrid"></div><div class="selection-box" id="selectionBox" hidden></div></div>
+        <div class="empty-state" id="emptyState" hidden><div class="empty-icon">⌕</div><h3>No medicines found</h3><p>Try another search or add this medicine to your catalog.</p><button class="primary" type="button" data-open-add><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add medicine</button></div>
+      </div>
+      <aside class="shelf-card" id="guide">
+        <div class="shelf-card-head"><div><span>STORE MAP</span><strong>Quick shelf guide</strong></div><div class="shelf-head-actions"><button id="openShelfReference" type="button" aria-label="Open shelf position reference" title="Shelf position reference"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/></svg></button><button id="toggleShelfGuide" type="button" aria-label="Collapse shelf guide" aria-expanded="true" aria-controls="shelfGuide" title="Minimize shelf guide"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button><button id="manageGondolas" type="button"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Gondola</button></div></div>
+        <div id="shelfGuide"></div>
+      </aside>
+    </section>
+  </main>
+
+  <nav class="mobile-tabbar" aria-label="Mobile navigation">
+    <button class="mobile-tab active" type="button" data-mobile-destination="inventory" aria-current="page"><svg class="ui-icon"><use href="icons.svg#search"></use></svg><span>Inventory</span></button>
+    <button class="mobile-tab" type="button" data-mobile-destination="shelves"><svg class="ui-icon"><use href="icons.svg#shelves"></use></svg><span>Shelves</span></button>
+    <button class="mobile-tab" type="button" data-mobile-destination="organize"><svg class="ui-icon"><use href="icons.svg#organize"></use></svg><span>Organize</span></button>
+    <button class="mobile-tab" type="button" data-mobile-destination="more"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>More</span></button>
+  </nav>
+  <button class="mobile-fab" type="button" data-open-add aria-label="Add medicines"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <div class="mobile-more-sheet" id="mobileMoreSheet" hidden>
+    <button class="mobile-sheet-backdrop" type="button" data-close-mobile-more aria-label="Close menu"></button>
+    <section class="mobile-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="mobileMoreTitle">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="mobile-sheet-head"><div><p class="eyebrow">TOOLS</p><h2 id="mobileMoreTitle">More</h2></div><button class="icon-button" type="button" data-close-mobile-more aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <div class="mobile-more-grid">
+        <button type="button" data-mobile-action="add"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span><strong>Add medicines</strong><small>Update inventory</small></span></button>
+        <button type="button" data-mobile-action="expiry"><svg class="ui-icon"><use href="icons.svg#clock"></use></svg><span><strong>Near expiry</strong><small>Review upcoming dates</small></span></button>
+        <button type="button" data-mobile-action="categories"><svg class="ui-icon"><use href="icons.svg#edit"></use></svg><span><strong>Categories</strong><small>Edit and manage</small></span></button>
+        <button type="button" data-mobile-action="gondolas"><svg class="ui-icon"><use href="icons.svg#shelves"></use></svg><span><strong>Gondolas</strong><small>Manage store layout</small></span></button>
+        <button type="button" data-mobile-action="settings"><svg class="ui-icon"><use href="icons.svg#settings"></use></svg><span><strong>Settings</strong><small>Data and preferences</small></span></button>
+      </div>
+    </section>
+  </div>
+
+  <dialog id="addDialog">
+    <form method="dialog" id="medicineForm">
+      <div class="dialog-head"><div><p class="eyebrow">UPDATE INVENTORY</p><h2>Add medicines</h2><p>Paste one medicine per line, then assign them all to a location.</p></div><button class="icon-button" value="cancel" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <label class="field"><span>Medicine names <b>· one per line</b></span><textarea id="bulkNames" rows="7" placeholder="Paracetamol 500mg&#10;Ibuprofen 200mg&#10;Cetirizine 10mg" required></textarea><small id="lineCount">0 medicines detected</small></label>
+      <div class="form-row">
+        <label class="field"><span>Gondola / aisle</span><input id="gondolaInput" list="gondolaList" placeholder="e.g. G-03" required><datalist id="gondolaList"></datalist></label>
+        <label class="field"><span>Shelf</span><input id="shelfInput" list="shelfList" placeholder="e.g. Shelf B" required><datalist id="shelfList"></datalist></label>
+      </div>
+      <div class="field"><span>Medicine category</span><select id="categoryInput" aria-label="Medicine category"></select><label class="inline-category" id="inlineCategoryField" hidden><span>New category name</span><input id="inlineNewCategory" placeholder="e.g. Respiratory care"></label></div>
+      <div class="dialog-actions"><button class="secondary" value="cancel" type="button" id="cancelAdd">Cancel</button><button class="primary" type="submit" id="saveMedicines"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span id="saveMedicinesLabel">Add medicines</span></button></div>
+    </form>
+  </dialog>
+  <dialog id="gondolaDialog">
+    <form id="gondolaForm">
+      <div class="dialog-head"><div><p class="eyebrow">PHARMACY LAYOUT</p><h2>Manage gondolas</h2><p>Create a gondola and assign its shelves line by line.</p></div><button class="icon-button" type="button" id="closeGondolas" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <label class="field"><span>New gondola name</span><input id="newGondola" placeholder="e.g. G-05" required></label>
+      <label class="field"><span>Shelf names <b>· one per line</b></span><textarea id="newShelves" rows="4" placeholder="Shelf A&#10;Shelf B&#10;Shelf C" required></textarea></label>
+      <button class="primary full-button" type="submit"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add gondola and shelves</button>
+      <div class="configured-title"><strong>Configured gondolas</strong><span id="gondolaCount">0 gondolas</span></div>
+      <div class="gondola-list" id="gondolaListView"></div>
+    </form>
+  </dialog>
+  <dialog id="categoryDialog">
+    <form id="categoryForm">
+      <div class="dialog-head"><div><p class="eyebrow">INVENTORY SETTINGS</p><h2>Edit categories</h2><p>Add, rename, or remove the category choices used throughout MediMap.</p></div><button class="icon-button" type="button" id="closeCategories" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <div class="new-category-row"><input id="newCategory" placeholder="New category name" aria-label="New category name"><button class="primary" type="submit">Add category</button></div>
+      <div class="category-editor-list" id="categoryEditorList"></div>
+      <div class="dialog-actions"><button class="primary" type="button" id="doneCategories">Done</button></div>
+    </form>
+  </dialog>
+  <dialog id="categoryGuideDialog" class="category-guide-dialog">
+    <div class="category-guide-shell">
+      <div class="dialog-head"><div><p class="eyebrow">CATEGORY REFERENCE</p><h2>Category guide</h2><p>Search category names and review their descriptions.</p></div><button class="icon-button" type="button" id="closeCategoryGuide" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <label class="category-guide-search"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="categoryGuideSearch" type="search" placeholder="Search categories or descriptions…" autocomplete="off"></label>
+      <div class="category-guide-count" id="categoryGuideCount"></div>
+      <div class="category-guide-list" id="categoryGuideList"></div>
+      <div class="dialog-actions"><button class="primary" type="button" id="doneCategoryGuide">Done</button></div>
+    </div>
+  </dialog>
+  <dialog id="medicineSummaryDialog" class="medicine-summary-dialog">
+    <div class="medicine-summary-shell">
+      <div class="dialog-head"><div><p class="eyebrow">MEDICINE DETAILS</p><h2 id="summaryBrandName">Medicine</h2><p id="summaryLocation">Location</p></div><button class="icon-button" type="button" id="closeMedicineSummary" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <dl class="medicine-summary-grid"><div><dt>Brand name</dt><dd id="summaryBrand"></dd></div><div><dt>Generic name</dt><dd id="summaryGeneric"></dd></div><div><dt>Category</dt><dd id="summaryCategory"></dd></div><div class="summary-description"><dt>Category description</dt><dd id="summaryCategoryDescription"></dd></div><div><dt>Expiry</dt><dd id="summaryExpiry"></dd></div></dl>
+      <div class="dialog-actions"><button class="primary" type="button" id="doneMedicineSummary">Done</button></div>
+    </div>
+  </dialog>
+  <dialog id="shelfReferenceDialog" class="shelf-reference-dialog">
+    <div class="shelf-reference-shell">
+      <div class="dialog-head"><div><p class="eyebrow">SHELF REFERENCE</p><h2>Shelf positions</h2><p>Use this guide consistently for every gondola.</p></div><button class="icon-button" type="button" id="closeShelfReference" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <div class="shelf-reference-list"><div><b>A</b><span><strong>Shelf A</strong><small>Top</small></span></div><div><b>B</b><span><strong>Shelf B</strong><small>Upper-middle</small></span></div><div><b>C</b><span><strong>Shelf C</strong><small>Middle</small></span></div><div><b>D</b><span><strong>Shelf D</strong><small>Lower-middle</small></span></div><div><b>E</b><span><strong>Shelf E</strong><small>Bottom</small></span></div></div>
+      <div class="dialog-actions"><button class="primary" type="button" id="doneShelfReference">Done</button></div>
+    </div>
+  </dialog>
+  <dialog id="settingsDialog">
+    <form id="settingsForm">
+      <div class="dialog-head"><div><p class="eyebrow">MEDIMAP</p><h2>Settings</h2><p>Manage display preferences and locally stored pharmacy data.</p></div><button class="icon-button" type="button" id="closeSettings" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <section class="settings-section custom-name-section"><div><strong>Custom pharmacy name</strong><small>Shown below MediMap in the sidebar and mobile header.</small></div><div class="custom-name-control"><input id="settingsCustomName" type="text" maxlength="60" placeholder="e.g. Sunrise Pharmacy" aria-label="Custom pharmacy name"><button class="text-button" id="clearCustomName" type="button">Clear</button></div></section>
+      <section class="settings-section"><div><strong>Default inventory view</strong><small>Choose how medicines appear when MediMap opens.</small></div><select id="settingsView" aria-label="Default inventory view"><option value="grid">Grid view</option><option value="list">List view</option></select></section>
+      <section class="settings-section downloads-section"><div><strong>Download files</strong><small>Get the editable Excel formats for inventory and shelf arrangements.</small></div><div class="download-file-actions"><a class="secondary template-link" href="MediMap_Inventory_Import_Template.xlsx" download><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M8 11l4 4 4-4M5 20h14"/></svg><span>Inventory template</span></a><a class="secondary template-link" href="MediMap_Arrangement_Import_Template.xlsx" download><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M8 11l4 4 4-4M5 20h14"/></svg><span>Arrangement format</span></a></div></section>
+      <section class="settings-section data-transfer-section"><div><strong>Import or transfer data</strong><small>Import inventory or transfer a complete MediMap backup.</small></div><div class="data-transfer-actions"><label class="secondary import-button"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V9M8 13l4-4 4 4M5 4h14"/></svg><span>Import Excel / Data</span><input id="excelFile" type="file" accept=".xlsx,.xls,.json,application/json" hidden></label><button class="secondary" id="exportAppData" type="button"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10l4 4 4-4M5 19h14M18 5a8 8 0 0 0-12 1"/></svg><span>Export Data</span></button></div></section>
+      <section class="settings-section data-summary"><div><strong>Local data</strong><small>Stored only on this device and available offline.</small></div><div class="settings-stats"><span><b id="settingsMedicineCount">0</b> medicines</span><span><b id="settingsGondolaCount">0</b> gondolas</span><span><b id="settingsCategoryCount">0</b> categories</span></div></section>
+      <section class="format-panel"><div><strong>Format app data</strong><p>Permanently erase all medicines, generic names, expiry dates, gondolas, shelves, and custom categories from this device.</p></div><button class="danger-button" id="formatData" type="button">Format data</button></section>
+      <div class="dialog-actions settings-footer"><span class="app-version" id="settingsAppVersion">Version</span><button class="primary" type="button" id="doneSettings">Done</button></div>
+    </form>
+  </dialog>
+  <dialog id="organizeDialog" class="wide-dialog">
+    <div class="organize-shell">
+      <div class="dialog-head"><div><p class="eyebrow">SHELF PLANNER</p><h2>Organize gondola</h2><p>Type a medicine, press Enter, then enter its expiry as MM/YYYY.</p></div><button class="icon-button" type="button" id="closeOrganize" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <div class="organize-toolbar"><label><span>Gondola</span><select id="organizeGondola" aria-label="Gondola to organize"></select></label><div class="organize-hint"><i></i><span id="organizeHint">Select a blank shelf cell to begin</span></div></div>
+      <div class="organize-layout">
+        <section class="organize-board"><div class="organize-section-title"><strong>Shelf inventory</strong><small>Medicine and expiry, one row at a time</small></div><div class="organizer-selection-actions"><button class="secondary" type="button" id="selectAllOrganized">Select all</button><button class="danger-button" type="button" id="deleteOrganized" disabled>Delete selected</button><span id="organizedSelectionCount">0 selected</span></div><div class="organize-table-wrap" id="organizeGrid"></div></section>
+        <aside class="organize-medicine-panel"><div class="organize-section-title"><strong>Medicine list</strong><small>Choose a medicine after selecting a cell</small></div><input id="organizeSearch" type="search" placeholder="Search medicines…"><div class="organize-medicine-list" id="organizeMedicineList"></div></aside>
+      </div>
+      <datalist id="organizeMedicineOptions"></datalist>
+      <div class="dialog-actions organize-actions"><a class="secondary template-link" href="MediMap_Arrangement_Import_Template.xlsx" download><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M8 11l4 4 4-4M5 20h14"/></svg>Download format</a><label class="secondary import-button" for="importOrganizeFile"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V9M8 13l4-4 4 4M5 4h14"/></svg>Import arrangement<input id="importOrganizeFile" type="file" accept=".xlsx,.xls" hidden></label><button class="secondary" type="button" id="exportOrganize"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M8 11l4 4 4-4M5 20h14"/></svg>Export arrangement</button><button class="primary" type="button" id="doneOrganize"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Done organizing</button></div>
+    </div>
+  </dialog>
+  <dialog id="nearExpiryDialog" class="near-expiry-dialog">
+    <div class="near-expiry-shell">
+      <div class="dialog-head"><div><p class="eyebrow">EXPIRY REPORT</p><h2>Near expiry medicines</h2><p>Review upcoming expiries by gondola or select a specific month and year.</p></div><button class="icon-button" type="button" id="closeNearExpiry" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <div class="near-expiry-filters"><label><span>Month</span><select id="nearExpiryMonth"><option value="">Near expiry</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select></label><label><span>Year</span><select id="nearExpiryYear"><option value="">All years</option></select></label></div>
+      <div class="near-expiry-summary" id="nearExpirySummary"></div>
+      <div class="near-expiry-table-wrap"><table class="near-expiry-table"><thead><tr><th>Medicine</th><th>Shelf</th><th>Expiry</th><th>Status</th><th>Action</th></tr></thead><tbody id="nearExpiryBody"></tbody></table><div class="near-expiry-empty" id="nearExpiryEmpty" hidden>No medicines match this expiry period.</div></div>
+      <div class="dialog-actions"><button class="primary" type="button" id="doneNearExpiry">Done</button></div>
+    </div>
+  </dialog>
+  <dialog id="expiryDialog">
+    <form id="expiryForm">
+      <div class="dialog-head"><div><p class="eyebrow">EXPIRY TRACKING</p><h2 id="expiryTitle">Set expiry dates</h2><p>Enter MM/YYYY. Separate multiple expiry batches with commas.</p></div><button class="icon-button" type="button" id="closeExpiry" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <div class="expiry-summary"><span id="expiryLocation">Gondola</span><strong id="expiryProgress">0 of 0 completed</strong></div>
+      <div class="expiry-list" id="expiryList"></div>
+      <div class="dialog-actions"><button class="secondary" type="button" id="cancelExpiry">Cancel</button><button class="primary" type="submit">Save expiry dates</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMessage"></span><button id="toastAction" type="button" hidden>Undo</button></div>
+  <script src="xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
