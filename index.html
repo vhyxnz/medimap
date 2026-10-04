@@ -56,6 +56,7 @@
     <section class="search-panel" id="inventory">
       <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search medicine, category, gondola or shelf…" autocomplete="off"></label>
       <div class="filter-row">
+        <button class="tool-button mobile-filter-trigger" id="openMobileFilters" type="button"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters <span id="mobileFilterCount" hidden></span></button>
         <div class="category-filter-panel"><button class="tool-button category-toggle" id="toggleCategories" type="button" aria-expanded="false">Categories</button><div class="filter-group" id="categoryFilters" aria-label="Filter by category" hidden></div></div>
         <div class="mobile-quick-filters" aria-label="Quick inventory filters">
           <select id="mobileGondolaFilter" aria-label="Filter by gondola"><option value="">All gondolas</option></select>
@@ -77,7 +78,7 @@
             <button class="danger-button" id="deleteSelected" type="button">Delete selected</button>
           </div>
         </div>
-        <div class="selection-surface" id="selectionSurface"><div class="medicine-grid" id="medicineGrid"></div><div class="selection-box" id="selectionBox" hidden></div></div>
+        <div class="selection-surface" id="selectionSurface"><div class="medicine-grid" id="medicineGrid"></div><button class="load-more-button" id="loadMoreMedicines" type="button" hidden>Show more medicines</button><div class="selection-box" id="selectionBox" hidden></div></div>
         <div class="empty-state" id="emptyState" hidden><div class="empty-icon">⌕</div><h3>No medicines found</h3><p>Try another search or add this medicine to your catalog.</p><button class="primary" type="button" data-open-add><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add medicine</button></div>
       </div>
       <aside class="shelf-card" id="guide">
@@ -153,7 +154,7 @@
     <div class="medicine-summary-shell">
       <div class="dialog-head"><div><p class="eyebrow">MEDICINE DETAILS</p><h2 id="summaryBrandName">Medicine</h2><p id="summaryLocation">Location</p></div><button class="icon-button" type="button" id="closeMedicineSummary" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
       <dl class="medicine-summary-grid"><div><dt>Brand name</dt><dd id="summaryBrand"></dd></div><div><dt>Generic name</dt><dd id="summaryGeneric"></dd></div><div><dt>Category</dt><dd id="summaryCategory"></dd></div><div class="summary-description"><dt>Category description</dt><dd id="summaryCategoryDescription"></dd></div><div><dt>Expiry</dt><dd id="summaryExpiry"></dd></div></dl>
-      <div class="dialog-actions"><button class="secondary" type="button" id="editMedicine"><svg class="ui-icon"><use href="icons.svg#edit"></use></svg>Edit medicine</button><button class="primary" type="button" id="doneMedicineSummary">Done</button></div>
+      <div class="dialog-actions medicine-detail-actions"><button class="danger-button" type="button" id="deleteMedicineFromDetails">Delete</button><button class="secondary" type="button" id="editMedicine"><svg class="ui-icon"><use href="icons.svg#edit"></use></svg>Edit medicine</button><button class="primary" type="button" id="doneMedicineSummary">Done</button></div>
     </div>
   </dialog>
   <dialog id="editMedicineDialog">
@@ -165,6 +166,16 @@
       <div class="form-row"><label class="field"><span>Gondola</span><input id="editMedicineGondola" list="gondolaList" required></label><label class="field"><span>Shelf</span><input id="editMedicineShelf" list="shelfList" required></label></div>
       <label class="field"><span>Expiry dates</span><input id="editMedicineExpiry" placeholder="MM/YYYY, MM/YYYY" inputmode="text"><small>Separate multiple batches with commas.</small></label>
       <div class="dialog-actions"><button class="secondary" type="button" id="cancelEditMedicine">Cancel</button><button class="primary" type="submit">Save changes</button></div>
+    </form>
+  </dialog>
+  <dialog id="mobileFiltersDialog" class="mobile-filters-dialog">
+    <form id="mobileFiltersForm">
+      <div class="dialog-head"><div><p class="eyebrow">INVENTORY</p><h2>Filters and sorting</h2><p>Refine the medicine list.</p></div><button class="icon-button" type="button" id="closeMobileFilters" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <label class="field"><span>Category</span><select id="sheetCategoryFilter"></select></label>
+      <label class="field"><span>Gondola</span><select id="sheetGondolaFilter"></select></label>
+      <label class="field"><span>Expiry</span><select id="sheetExpiryFilter"><option value="">Any expiry</option><option value="expiring">Near expiry</option><option value="expired">Expired</option><option value="scheduled">Future dated</option><option value="undated">No expiry</option></select></label>
+      <label class="field"><span>Sort</span><select id="sheetSortFilter"><option value="name-asc">Name A–Z</option><option value="name-desc">Name Z–A</option><option value="location">Location</option><option value="newest">Newest added</option></select></label>
+      <div class="dialog-actions"><button class="secondary" type="button" id="resetMobileFilters">Reset</button><button class="primary" type="submit">Show medicines</button></div>
     </form>
   </dialog>
   <dialog id="shelfReferenceDialog" class="shelf-reference-dialog">
@@ -188,7 +199,7 @@
   </dialog>
   <dialog id="organizeDialog" class="wide-dialog">
     <div class="organize-shell">
-      <div class="dialog-head"><div><p class="eyebrow">SHELF PLANNER</p><h2>Organize gondola</h2><p>Type a medicine, press Enter, then enter its expiry as MM/YYYY.</p></div><button class="icon-button" type="button" id="closeOrganize" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div>
+      <div class="dialog-head"><div><p class="eyebrow">SHELF PLANNER</p><h2>Organize gondola</h2><p>Type a medicine, press Enter, then enter its expiry as MM/YYYY.</p></div><div class="organize-head-actions"><button class="icon-button" type="button" id="openOrganizeTools" aria-label="More organizer tools">•••</button><button class="icon-button" type="button" id="closeOrganize" aria-label="Close"><svg class="ui-icon"><use href="icons.svg#close"></use></svg></button></div></div>
       <div class="organize-toolbar"><label><span>Gondola</span><select id="organizeGondola" aria-label="Gondola to organize"></select></label><div class="organize-hint"><i></i><span id="organizeHint">Select a blank shelf cell to begin</span></div></div>
       <div class="organize-layout">
         <section class="organize-board"><div class="organize-section-title"><strong>Shelf inventory</strong><small>Medicine and expiry, one row at a time</small></div><div class="organizer-selection-actions"><button class="secondary" type="button" id="selectAllOrganized">Select all</button><button class="danger-button" type="button" id="deleteOrganized" disabled>Delete selected</button><span id="organizedSelectionCount">0 selected</span></div><div class="organize-table-wrap" id="organizeGrid"></div></section>
@@ -196,6 +207,7 @@
       </div>
       <datalist id="organizeMedicineOptions"></datalist>
       <div class="dialog-actions organize-actions"><a class="secondary template-link" href="MediMap_Arrangement_Import_Template.xlsx" download><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M8 11l4 4 4-4M5 20h14"/></svg><span class="action-long">Download format</span><span class="action-short">Format</span></a><label class="secondary import-button" for="importOrganizeFile"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V9M8 13l4-4 4 4M5 4h14"/></svg><span class="action-long">Import arrangement</span><span class="action-short">Import</span><input id="importOrganizeFile" type="file" accept=".xlsx,.xls" hidden></label><button class="secondary" type="button" id="exportOrganize"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M8 11l4 4 4-4M5 20h14"/></svg><span class="action-long">Export arrangement</span><span class="action-short">Export</span></button><button class="primary" type="button" id="doneOrganize"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span class="action-long">Done organizing</span><span class="action-short">Done</span></button></div>
+      <div class="organize-tools-menu" id="organizeToolsMenu" hidden><a href="MediMap_Arrangement_Import_Template.xlsx" download>Download format</a><label for="importOrganizeFile">Import arrangement</label><button type="button" data-organize-tool="export">Export arrangement</button><button type="button" data-organize-tool="select">Select all</button><button class="danger-text" type="button" data-organize-tool="delete">Delete selected</button></div>
     </div>
   </dialog>
   <dialog id="nearExpiryDialog" class="near-expiry-dialog">
