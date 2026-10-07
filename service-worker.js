@@ -1,4 +1,4 @@
-const CACHE = "medimap-v74";
+const CACHE = "medimap-v75";
 const ASSETS = ["./", "./index.html", "./styles.css", "./selection.css", "./theme.css", "./expiry.css", "./bulk-edit.css", "./gondolas.css", "./categories.css", "./inventory-tools.css", "./import.css", "./settings.css", "./organize.css", "./export-arrangement.css", "./premium-mobile.css", "./xlsx.full.min.js", "./MediMap_Inventory_Import_Template.xlsx", "./MediMap_Arrangement_Import_Template.xlsx", "./app.js", "./manifest.webmanifest", "./icon.svg", "./icons.svg", "./MediFindLogo.png", "./MediMapLogoPremium.svg", "./MediMapLogoPremium.png", "./favicon.ico", "./favicon-16.png", "./favicon-32.png", "./apple-touch-icon.png?v=4", "./icon-192.png?v=4", "./icon-512.png?v=4", "./icon-maskable-192.png?v=4", "./icon-maskable-512.png?v=4"];
 
 self.addEventListener("install", (event) => event.waitUntil((async () => {
