@@ -1,4 +1,4 @@
-const APP_VERSION = "1.8.1";
+const APP_VERSION = "1.9.0";
 const starterMedicines = [
   { id: 1, name: "Paracetamol 500mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf A", addedAt: 6 },
   { id: 2, name: "Ibuprofen 200mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf B", addedAt: 5 },
@@ -647,6 +647,12 @@ renderCustomPharmacyName();
 renderAppVersion();
 render();
 
+const welcomeScreen = $("#welcomeScreen");
+const welcomeWasCompleted = localStorage.getItem("medimap-welcome-complete") === "1";
+const hasLaunchAction = new URLSearchParams(location.search).has("action");
+if (!welcomeWasCompleted && !hasLaunchAction) { welcomeScreen.hidden = false; document.body.classList.add("welcome-open"); }
+$("#welcomeStart").addEventListener("click", () => { localStorage.setItem("medimap-welcome-complete", "1"); welcomeScreen.hidden = true; document.body.classList.remove("welcome-open"); setTimeout(() => $("#searchInput")?.focus(), 80); });
+
 let deferredInstallPrompt = null;
 const installControls = [...document.querySelectorAll("[data-install-app]")];
 function setInstallControlsVisible(visible) { installControls.forEach((control) => { control.hidden = !visible; }); }
@@ -664,12 +670,54 @@ const launchAction = new URLSearchParams(location.search).get("action");
 if (launchAction === "add") setTimeout(openDialog, 250);
 if (launchAction === "expiry") setTimeout(openNearExpiryReport, 250);
 
+let serviceWorkerRegistration = null;
+let pendingUpdateWorker = null;
+const watchedUpdateWorkers = new WeakSet();
+const updateButton = $("#checkAppUpdate");
+const updateButtonLabel = updateButton.querySelector("span");
+const updateStatus = $("#appUpdateStatus");
+function setUpdateState(state, message) {
+  updateButton.disabled = state === "checking";
+  updateButton.classList.toggle("is-checking", state === "checking");
+  updateStatus.classList.toggle("update-ready", state === "ready");
+  updateStatus.classList.toggle("update-error", state === "error");
+  updateStatus.textContent = message;
+  updateButtonLabel.textContent = state === "ready" ? "Install update" : state === "checking" ? "Checking…" : "Check for updates";
+}
+function offerAppUpdate(worker) { if (!worker) return; pendingUpdateWorker = worker; setUpdateState("ready", "A new version is ready to install."); toast("A MediMap update is ready", "Update", () => installAppUpdate(), 10000); }
+function installAppUpdate() { if (!pendingUpdateWorker) return; setUpdateState("checking", "Installing update…"); pendingUpdateWorker.postMessage("SKIP_WAITING"); }
+function watchInstallingWorker(worker) {
+  if (!worker || watchedUpdateWorkers.has(worker)) return;
+  watchedUpdateWorkers.add(worker);
+  setUpdateState("checking", "Downloading the latest version…");
+  worker.addEventListener("statechange", () => {
+    if (worker.state === "installed") { if (navigator.serviceWorker.controller) offerAppUpdate(worker); else setUpdateState("current", `MediMap ${APP_VERSION} is ready offline.`); }
+    else if (worker.state === "activated" && !pendingUpdateWorker) setUpdateState("current", `MediMap ${APP_VERSION} is up to date.`);
+    else if (worker.state === "redundant") setUpdateState("error", "The update could not be installed. Try again.");
+  });
+}
+async function checkForAppUpdate() {
+  if (pendingUpdateWorker) { installAppUpdate(); return; }
+  if (!("serviceWorker" in navigator)) { setUpdateState("error", "Updates are not supported in this browser."); return; }
+  setUpdateState("checking", "Checking for a newer version…");
+  try {
+    serviceWorkerRegistration = serviceWorkerRegistration || await navigator.serviceWorker.getRegistration() || await navigator.serviceWorker.register("service-worker.js", { updateViaCache: "none" });
+    await serviceWorkerRegistration.update();
+    if (serviceWorkerRegistration.waiting) offerAppUpdate(serviceWorkerRegistration.waiting);
+    else if (serviceWorkerRegistration.installing) watchInstallingWorker(serviceWorkerRegistration.installing);
+    else setUpdateState("current", `MediMap ${APP_VERSION} is up to date.`);
+  } catch (error) {
+    console.error("MediMap update check failed", error);
+    setUpdateState("error", navigator.onLine ? "Could not check for updates. Try again." : "Connect to the internet to check for updates.");
+  }
+}
+updateButton.addEventListener("click", checkForAppUpdate);
+
 if ("serviceWorker" in navigator) window.addEventListener("load", async () => {
   try {
-    const registration = await navigator.serviceWorker.register("service-worker.js");
-    const offerUpdate = (worker) => { if (!worker) return; toast("A MediMap update is ready", "Update", () => worker.postMessage("SKIP_WAITING"), 10000); };
-    if (registration.waiting) offerUpdate(registration.waiting);
-    registration.addEventListener("updatefound", () => { const worker = registration.installing; worker?.addEventListener("statechange", () => { if (worker.state === "installed" && navigator.serviceWorker.controller) offerUpdate(worker); }); });
+    serviceWorkerRegistration = await navigator.serviceWorker.register("service-worker.js", { updateViaCache: "none" });
+    if (serviceWorkerRegistration.waiting) offerAppUpdate(serviceWorkerRegistration.waiting);
+    serviceWorkerRegistration.addEventListener("updatefound", () => watchInstallingWorker(serviceWorkerRegistration.installing));
     let refreshing = false; navigator.serviceWorker.addEventListener("controllerchange", () => { if (refreshing) return; refreshing = true; location.reload(); });
-  } catch (error) { console.error("MediMap could not enable offline mode", error); }
+  } catch (error) { console.error("MediMap could not enable offline mode", error); setUpdateState("error", "Automatic updates are unavailable right now."); }
 });
