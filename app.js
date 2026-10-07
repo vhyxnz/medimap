@@ -1,4 +1,4 @@
-const APP_VERSION = "1.9.1";
+const APP_VERSION = "1.9.2";
 const starterMedicines = [
   { id: 1, name: "Paracetamol 500mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf A", addedAt: 6 },
   { id: 2, name: "Ibuprofen 200mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf B", addedAt: 5 },
@@ -650,10 +650,9 @@ renderAppVersion();
 render();
 
 const welcomeScreen = $("#welcomeScreen");
-const welcomeWasCompleted = localStorage.getItem("medimap-welcome-complete") === "1";
 const hasLaunchAction = new URLSearchParams(location.search).has("action");
-if (!welcomeWasCompleted && !hasLaunchAction) { welcomeScreen.hidden = false; document.body.classList.add("welcome-open"); }
-$("#welcomeStart").addEventListener("click", () => { localStorage.setItem("medimap-welcome-complete", "1"); welcomeScreen.hidden = true; document.body.classList.remove("welcome-open"); setTimeout(() => $("#searchInput")?.focus(), 80); });
+if (!hasLaunchAction) { welcomeScreen.hidden = false; document.body.classList.add("welcome-open"); }
+$("#welcomeStart").addEventListener("click", () => { welcomeScreen.hidden = true; document.body.classList.remove("welcome-open"); setTimeout(() => $("#searchInput")?.focus(), 80); });
 
 let deferredInstallPrompt = null;
 const installControls = [...document.querySelectorAll("[data-install-app]")];
