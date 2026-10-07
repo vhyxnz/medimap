@@ -12,14 +12,14 @@
   "theme_color": "#123b66",
   "categories": ["medical", "business", "productivity"],
   "icons": [
-    {"src": "app-icon-v2-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "app-icon-v2-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "app-icon-v2-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
-    {"src": "app-icon-v2-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {"src": "icon-192.png?v=4", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png?v=4", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable-192.png?v=4", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
+    {"src": "icon-maskable-512.png?v=4", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
   ],
   "shortcuts": [
-    {"name": "Search inventory", "short_name": "Search", "description": "Search the medicine inventory", "url": "./#inventory", "icons": [{"src": "app-icon-v2-192.png", "sizes": "192x192"}]},
-    {"name": "Add medicines", "short_name": "Add", "description": "Add medicines to the catalog", "url": "./?action=add", "icons": [{"src": "app-icon-v2-192.png", "sizes": "192x192"}]},
-    {"name": "Near expiry", "short_name": "Expiry", "description": "Review near-expiry medicines", "url": "./?action=expiry", "icons": [{"src": "app-icon-v2-192.png", "sizes": "192x192"}]}
+    {"name": "Search inventory", "short_name": "Search", "description": "Search the medicine inventory", "url": "./#inventory", "icons": [{"src": "icon-192.png?v=4", "sizes": "192x192"}]},
+    {"name": "Add medicines", "short_name": "Add", "description": "Add medicines to the catalog", "url": "./?action=add", "icons": [{"src": "icon-192.png?v=4", "sizes": "192x192"}]},
+    {"name": "Near expiry", "short_name": "Expiry", "description": "Review near-expiry medicines", "url": "./?action=expiry", "icons": [{"src": "icon-192.png?v=4", "sizes": "192x192"}]}
   ]
 }
