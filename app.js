@@ -1,4 +1,4 @@
-const APP_VERSION = "1.9.2";
+const APP_VERSION = "1.9.3";
 const starterMedicines = [
   { id: 1, name: "Paracetamol 500mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf A", addedAt: 6 },
   { id: 2, name: "Ibuprofen 200mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf B", addedAt: 5 },
@@ -694,7 +694,7 @@ function watchInstallingWorker(worker) {
   worker.addEventListener("statechange", () => {
     if (worker.state === "installed") { if (navigator.serviceWorker.controller) offerAppUpdate(worker); else setUpdateState("current", `MediMap ${APP_VERSION} is ready offline.`); }
     else if (worker.state === "activated" && !pendingUpdateWorker) setUpdateState("current", `MediMap ${APP_VERSION} is up to date.`);
-    else if (worker.state === "redundant") setUpdateState("error", "The update could not be installed. Try again.");
+    else if (worker.state === "redundant") setUpdateState("error", "The update download was interrupted. Check your connection and try again.");
   });
 }
 async function checkForAppUpdate() {
