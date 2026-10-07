@@ -173,7 +173,7 @@
       <label class="field"><span>Generic name</span><input id="editGenericName" placeholder="Optional"></label>
       <label class="field"><span>Category</span><select id="editMedicineCategory"></select></label>
       <div class="form-row"><label class="field"><span>Gondola</span><input id="editMedicineGondola" list="gondolaList" required></label><label class="field"><span>Shelf</span><input id="editMedicineShelf" list="shelfList" required></label></div>
-      <label class="field"><span>Expiry dates</span><input id="editMedicineExpiry" placeholder="MM/YYYY, MM/YYYY" inputmode="text"><small>Separate multiple batches with commas.</small></label>
+      <label class="field"><span>Expiry dates</span><input id="editMedicineExpiry" placeholder="MM/YYYY, MM/YYYY" inputmode="numeric" pattern="[0-9/, ]*"><small>Type month and year; separators are added automatically.</small></label>
       <div class="dialog-actions"><button class="secondary" type="button" id="cancelEditMedicine">Cancel</button><button class="primary" type="submit">Save changes</button></div>
     </form>
   </dialog>

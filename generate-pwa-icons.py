@@ -6,6 +6,10 @@ SOURCE = ROOT / "MediMapLogoPremium.png"
 BACKGROUND = (18, 59, 102, 255)
 
 source = Image.open(SOURCE).convert("RGBA")
+# Crop away the artwork's inset outline. Launchers apply their own icon mask,
+# so the exported app icons should use a clean, full-bleed edge.
+crop_inset = max(20, round(min(source.size) * 0.04))
+source = source.crop((crop_inset, crop_inset, source.width - crop_inset, source.height - crop_inset))
 
 # Remove only the corner-connected white backdrop while preserving the white logo.
 mask_source = source.copy()
@@ -24,7 +28,9 @@ while stack:
     stack.extend(((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)))
 
 def standard(size: int, name: str) -> None:
-    icon = mask_source.resize((size, size), Image.Resampling.LANCZOS)
+    artwork = mask_source.resize((size, size), Image.Resampling.LANCZOS)
+    icon = Image.new("RGBA", (size, size), BACKGROUND)
+    icon.alpha_composite(artwork)
     icon.save(ROOT / name, optimize=True)
 
 def maskable(size: int, name: str) -> None:
@@ -43,5 +49,7 @@ standard(512, "icon-512.png")
 maskable(192, "icon-maskable-192.png")
 maskable(512, "icon-maskable-512.png")
 
-favicon = mask_source.resize((64, 64), Image.Resampling.LANCZOS)
+favicon_artwork = mask_source.resize((64, 64), Image.Resampling.LANCZOS)
+favicon = Image.new("RGBA", (64, 64), BACKGROUND)
+favicon.alpha_composite(favicon_artwork)
 favicon.save(ROOT / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48), (64, 64)])
