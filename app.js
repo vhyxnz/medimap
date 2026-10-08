@@ -1,4 +1,4 @@
-const APP_VERSION = "1.10.0";
+const APP_VERSION = "1.11.0";
 const starterMedicines = [
   { id: 1, name: "Paracetamol 500mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf A", addedAt: 6 },
   { id: 2, name: "Ibuprofen 200mg", category: "Uncategorized", gondola: "G-01", shelf: "Shelf B", addedAt: 5 },
@@ -523,7 +523,7 @@ $("#doneSettings").addEventListener("click", () => $("#settingsDialog").close())
 $("#settingsCustomName").addEventListener("input", () => { customPharmacyName = $("#settingsCustomName").value.slice(0, 60); localStorage.setItem("medimap-custom-name", customPharmacyName); renderCustomPharmacyName(); });
 $("#clearCustomName").addEventListener("click", () => { customPharmacyName = ""; $("#settingsCustomName").value = ""; localStorage.removeItem("medimap-custom-name"); renderCustomPharmacyName(); toast("Custom name cleared"); });
 $("#exportAppData").addEventListener("click", exportMediMapData);
-function openImportAccessLink() { const input = $("#importAccessCode"); const status = $("#importCodeStatus"); const valid = input.value.trim().toUpperCase() === "TEAMXYZA2026"; status.classList.toggle("valid", valid); if (!valid) { status.textContent = "That access code is not recognized."; input.focus(); return; } status.textContent = "Code accepted. Opening team files…"; input.value = ""; window.location.href = "https://drive.google.com/drive/folders/1HqGEdiH_WqeU8ECqOoYc78kUhoMAYKfS?usp=drive_link"; }
+function openImportAccessLink() { const input = $("#importAccessCode"); const status = $("#importCodeStatus"); const valid = input.value.trim().toUpperCase() === "TEAMXYZA2026"; status.classList.toggle("valid", valid); if (!valid) { status.textContent = "That access code is not recognized."; input.focus(); return; } if (!navigator.onLine) { status.classList.remove("valid"); status.textContent = "An internet connection is required to open Google Drive."; return; } status.textContent = "Code accepted. Opening team files…"; input.value = ""; window.location.href = "https://drive.google.com/drive/folders/1HqGEdiH_WqeU8ECqOoYc78kUhoMAYKfS?usp=drive_link"; }
 $("#openImportCodeLink").addEventListener("click", openImportAccessLink);
 $("#importAccessCode").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); openImportAccessLink(); } });
 $("#importAccessCode").addEventListener("input", () => { $("#importCodeStatus").textContent = ""; $("#importCodeStatus").classList.remove("valid"); });
@@ -621,6 +621,8 @@ document.querySelectorAll("dialog").forEach((dialog) => {
 let navScrollFrame = 0;
 window.addEventListener("scroll", () => { if (window.innerWidth > 900 || navScrollFrame || $("#mobileMoreSheet")?.hidden === false || document.querySelector("dialog[open]")) return; navScrollFrame = requestAnimationFrame(() => { navScrollFrame = 0; const guideTop = $("#guide").getBoundingClientRect().top; setMobileTab(guideTop < window.innerHeight * .62 ? "shelves" : "inventory"); }); }, { passive: true });
 window.addEventListener("beforeunload", () => { persist(); persistOrganizerLayout(); persistOrganizerExtras(); });
+window.addEventListener("offline", () => toast("You’re offline — MediMap remains available on this device", "Got it", () => {}, 5000));
+window.addEventListener("online", () => toast("Connection restored"));
 
 function closeMobileMore() { const sheet = $("#mobileMoreSheet"); sheet.hidden = true; document.body.classList.remove("mobile-sheet-open"); const guideTop = $("#guide")?.getBoundingClientRect().top ?? Infinity; setMobileTab(guideTop < window.innerHeight * .62 ? "shelves" : "inventory"); }
 function setMobileTab(destination) { document.querySelectorAll("[data-mobile-destination]").forEach((button) => { const active = button.dataset.mobileDestination === destination; button.classList.toggle("active", active); if (active) button.setAttribute("aria-current", "page"); else button.removeAttribute("aria-current"); }); }
